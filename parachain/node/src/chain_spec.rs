@@ -3,7 +3,7 @@ use artemis_runtime::{
 	AccountId, EthereumHeader,
 	BalancesConfig, GenesisConfig,
 	SystemConfig, VerifierLightclientConfig,
-	ETHConfig, ERC20Config,
+	ChannelConfig,
 	ParachainInfoConfig,
 	WASM_BINARY, Signature,
 };
@@ -131,10 +131,13 @@ fn testnet_genesis(
 			},
 			initial_difficulty: 0x3fc9cb4448510a2b525u128.into(),
 		}),
-		eth_app: Some(ETHConfig {
+		eth_app: Some(AppConfig {
 			address: hex!["fc97a6197dc90bef6bbefd672742ed75e9768553"].into()
 		}),
-		erc20_app: Some(ERC20Config {
+		erc20_app: Some(AppConfig {
+			address: hex!["eda338e4dc46038493b885327842fd3e301cab39"].into()
+		}),
+		in_channel_app: Some(AppConfig {
 			address: hex!["eda338e4dc46038493b885327842fd3e301cab39"].into()
 		}),
 		parachain_info: Some(ParachainInfoConfig { parachain_id: para_id }),

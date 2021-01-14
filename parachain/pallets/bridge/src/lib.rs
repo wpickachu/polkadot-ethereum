@@ -25,6 +25,7 @@ use sp_std::prelude::*;
 use sp_core::H160;
 
 use artemis_core::{AppId, Application, Message, Verifier};
+use crate::RawEvent;
 
 pub trait Config: system::Config {
 	type Event: From<Event> + Into<<Self as system::Config>::Event>;
@@ -37,6 +38,9 @@ pub trait Config: system::Config {
 
 	/// ERC20 Application
 	type AppERC20: Application;
+
+	/// ERC20 Application
+	type AppInChannel: Application;
 }
 
 decl_storage! {
@@ -48,6 +52,7 @@ decl_storage! {
 decl_event!(
     /// Events for the Bridge module.
 	pub enum Event {
+		Dispatched(H160),
 	}
 );
 
@@ -84,6 +89,9 @@ impl<T: Config> Module<T> {
 			T::AppETH::handle(message.payload.as_ref())
 		} else if address == T::AppERC20::address() {
 			T::AppERC20::handle(message.payload.as_ref())
+		} else if address == T::AppInChannel::address() {
+			Self::deposit_event(RawEvent::Dispatched(address));
+			T::AppInChannel::handle(message.payload.as_ref())
 		} else {
 			Err(Error::<T>::AppNotFound.into())
 		}

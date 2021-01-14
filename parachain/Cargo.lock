@@ -272,6 +272,29 @@ dependencies = [
 ]
 
 [[package]]
+name = "artemis-in-channel-app"
+version = "0.1.1"
+dependencies = [
+ "artemis-assets",
+ "artemis-commitments",
+ "artemis-core",
+ "artemis-ethereum",
+ "ethabi-decode",
+ "frame-support",
+ "frame-system",
+ "hex-literal",
+ "parity-scale-codec",
+ "rlp",
+ "rustc-hex",
+ "serde",
+ "sp-core",
+ "sp-io",
+ "sp-keyring",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
 name = "artemis-node"
 version = "0.1.1"
 dependencies = [
@@ -338,6 +361,7 @@ dependencies = [
  "artemis-core",
  "artemis-erc20-app",
  "artemis-eth-app",
+ "artemis-in-channel-app",
  "artemis-token-dealer",
  "artemis-xcm-support",
  "cumulus-message-broker",

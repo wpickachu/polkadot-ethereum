@@ -1,6 +1,6 @@
 {
 	"relaychain": {
-		"bin": "<POLKADOT_DIR>/target/release/polkadot",
+		"bin": "/Users/aidanmusnitzky/code/snowfork/polkadot/target/release/polkadot",
 		"chain": "rococo-local",
 		"nodes": [
 			{

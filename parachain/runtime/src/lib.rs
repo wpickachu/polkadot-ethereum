@@ -336,6 +336,7 @@ impl bridge::Config for Runtime {
 	type Verifier = verifier_lightclient::Module<Runtime>;
 	type AppETH = eth_app::Module<Runtime>;
 	type AppERC20 = erc20_app::Module<Runtime>;
+	type AppInChannel = in_channel_app::Module<Runtime>;
 }
 
 parameter_types! {
@@ -379,6 +380,12 @@ impl erc20_app::Config for Runtime {
 	type Commitments = commitments::Module<Runtime>;
 }
 
+impl in_channel_app::Config for Runtime {
+	type Event = Event;
+	type Assets = assets::Module<Runtime>;
+	type Commitments = commitments::Module<Runtime>;
+}
+
 construct_runtime!(
 	pub enum Runtime where
 		Block = Block,
@@ -401,6 +408,7 @@ construct_runtime!(
 		Assets: assets::{Module, Call, Storage, Event<T>},
 		ETH: eth_app::{Module, Call, Config, Storage, Event<T>},
 		ERC20: erc20_app::{Module, Call, Config, Storage, Event<T>},
+		InChannel: in_channel_app::{Module, Call, Config, Storage, Event<T>},
 
 		LocalXcmHandler: xcm_handler::{Module, Event<T>, Origin},
 		TokenDealer: artemis_token_dealer::{Module, Storage, Call, Event<T>},

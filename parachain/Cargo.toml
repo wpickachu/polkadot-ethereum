@@ -14,6 +14,7 @@ members = [
     "pallets/verifier-lightclient",
     "pallets/eth-app",
     "pallets/erc20-app",
+    "pallets/in-channel-app",
     "pallets/commitments",
     "pallets/token-dealer",
     "node",

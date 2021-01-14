@@ -55,6 +55,7 @@ verifier-lightclient = { path = "../pallets/verifier-lightclient", package = "pa
 assets = { path = "../pallets/assets", package = "artemis-assets", default-features = false }
 eth-app = { path = "../pallets/eth-app", package = "artemis-eth-app", default-features = false }
 erc20-app = { path = "../pallets/erc20-app", package = "artemis-erc20-app", default-features = false }
+in-channel-app = { path = "../pallets/in-channel-app", package = "artemis-in-channel-app", default-features = false }
 commitments = { path = "../pallets/commitments", package = "artemis-commitments", default-features = false }
 
 [build-dependencies]
@@ -99,6 +100,7 @@ std = [
     "assets/std",
     "eth-app/std",
     "erc20-app/std",
+    "in-channel-app/std",
     "commitments/std",
     "artemis-token-dealer/std",
     "artemis-xcm-support/std"
