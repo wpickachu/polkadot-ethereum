@@ -1,0 +1,14 @@
+[Unit]
+Description=Polkadot Validator
+
+[Service]
+ExecStart=/usr/local/bin/polkadot \
+    --validator \
+    --chain rococo \
+    --base-path /var/lib/polkadot/data \
+    --name snowfork-rococo-01
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

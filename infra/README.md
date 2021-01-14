@@ -47,7 +47,7 @@ Some playbooks require authenticated access to AWS. Follow this guide [Configura
 
 Now set the configuration profile:
 
-```
+```bash
 export AWS_PROFILE=<profile>
 ```
 
@@ -56,7 +56,8 @@ export AWS_PROFILE=<profile>
 Ansible connects to our EC2 instances using public key authentication. Make sure you have an `ssh-agent` running. Request the EC2 keypair from a team member and add it your agent keyring
 
 Example:
-```
+
+```bash
 ssh-add ~/.ssh/<key>
 ```
 
@@ -68,8 +69,9 @@ In order to have Ansible decrypt these secrets, acquire the encryption key and w
 
 ### Deployments
 
-Change to the ansible directory
-```
+Change to the ansible directory:
+
+```bash
 cd ansible
 ```
 

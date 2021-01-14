@@ -1,0 +1,61 @@
+- hosts: localhost
+  gather_facts: False
+  vars:
+    keypair: rococo-keypair
+    image_id: ami-01aa664a17515f5bb
+    instance_type: t3a.medium
+    instance_role: SnowforkEC2InstanceRococo
+
+  tasks:
+    - name: Create base security group
+      amazon.aws.ec2_group:
+        name: rococo-v1-base-sg
+        description: Node Security Group
+        rules:
+          - proto: icmp
+            from_port: -1
+            to_port: -1
+            rule_desc: ICMP Echo Request
+          - proto: tcp
+            ports: 22
+            cidr_ip: 0.0.0.0/0
+            rule_desc: SSH
+        tags:
+          Environment: rococo-v1
+      register: rococo_v1_base_sg
+
+    - name: Create validator security group
+      amazon.aws.ec2_group:
+        name: rococo-v1-validator-sg
+        description: Node Security Group
+        rules:
+          - proto: tcp
+            ports: 30333
+            group_name: 0.0.0.0/0
+            rule_desc: Rococo P2P
+        tags:
+          Environment: rococo-v1
+      register: rococo_v1_validator_sg
+
+    - name: Provision rococo validator node
+      community.aws.ec2_instance:
+        key_name: rococo-keypair
+        image_id: "{{ image_id }}"
+        instance_type: t3a.large
+        instance_role: "{{ instance_role }}"
+        security_groups:
+          - "{{ rococo_v1_base_sg.group_id }}"
+          - "{{ rococo_v1_validator_sg.group_id }}"
+        availability_zone: euw1-az1
+        network:
+          assign_public_ip: true
+        volumes:
+          - device_name: /dev/sda1
+            ebs:
+              volume_size: 128
+              delete_on_termination: true
+        ebs_optimized: yes
+        wait: no
+        name: rococo-v1-validator
+        tags:
+          Environment: rococo-v1

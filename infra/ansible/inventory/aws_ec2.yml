@@ -9,7 +9,9 @@ cache_prefix: aws_ec2
 aws_profile: snowfork
 
 filters:
-  tag:Environment: rococo
+  tag:Environment:
+    - rococo
+    - rococo-v1
 
 hostnames:
   - tag:Name
