@@ -16,73 +16,81 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 #![allow(unused_variables)]
 
-use frame_support::{
-	decl_error, decl_event, decl_module, decl_storage,
-	traits::Get,
-	dispatch::DispatchResult};
-use frame_system::{self as system, ensure_signed};
-use sp_std::prelude::*;
-use artemis_core::{ChannelId, SubmitOutbound, Message, MessageCommitment, Verifier, registry::AppRegistry};
-use channel::inbound::make_inbound_channel;
-use channel::outbound::make_outbound_channel;
-use primitives::{InboundChannelData, OutboundChannelData};
-
 mod channel;
 pub mod primitives;
 
-pub trait Config: system::Config {
-	type Event: From<Event> + Into<<Self as system::Config>::Event>;
+pub use pallet::*;
 
-	/// The verifier module responsible for verifying submitted messages.
-	type Verifier: Verifier<<Self as system::Config>::AccountId>;
+use frame_support::pallet;
 
-	type Apps: Get<AppRegistry>;
+#[pallet]
+pub mod pallet {
+	use frame_support::{
+		traits::Get,
+		dispatch::{DispatchResult, DispatchResultWithPostInfo},
+	};
+	use frame_system::{self as system, ensure_signed};
+	use sp_std::marker::PhantomData;
+	use artemis_core::{ChannelId, SubmitOutbound, Message, MessageCommitment, Verifier, registry::AppRegistry};
+	use crate::channel::inbound::make_inbound_channel;
+	use crate::channel::outbound::make_outbound_channel;
+	use crate::primitives::{InboundChannelData, OutboundChannelData};
 
-	type MessageCommitment: MessageCommitment;
-}
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
 
-decl_storage! {
-	trait Store for Module<T: Config> as BridgeModule {
-		pub InboundChannels: map hasher(identity) ChannelId => InboundChannelData;
-		pub OutboundChannels: map hasher(identity) ChannelId => OutboundChannelData;
+	#[pallet::config]
+	pub trait Config: frame_system::Config {
+		/// The verifier module responsible for verifying submitted messages.
+		type Verifier: Verifier<<Self as system::Config>::AccountId>;
+
+		type Apps: Get<AppRegistry>;
+
+		type MessageCommitment: MessageCommitment;
 	}
-}
 
-decl_event! {
-    /// Events for the Bridge module.
-	pub enum Event {
+	#[pallet::pallet]
+	#[pallet::generate_store(pub (super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
 
-	}
-}
+	#[pallet::storage]
+	pub type InboundChannels<T: Config> = StorageMap<_, Identity, ChannelId, InboundChannelData, ValueQuery>;
 
-decl_error! {
-	pub enum Error for Module<T: Config> {
+	#[pallet::storage]
+	pub type OutboundChannels<T: Config> = StorageMap<_, Identity, ChannelId, OutboundChannelData, ValueQuery>;
+
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> { }
+
+	#[pallet::error]
+	pub enum Error<T> {
     	/// Target application not found.
 		AppNotFound
 	}
-}
 
-decl_module! {
-	pub struct Module<T: Config> for enum Call where origin: T::Origin {
-
-		type Error = Error<T>;
-
-		fn deposit_event() = default;
-
-		#[weight = 0]
-		pub fn submit(origin, channel_id: ChannelId, message: Message) -> DispatchResult {
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {
+		#[pallet::weight(0)]
+		pub fn submit(origin: OriginFor<T>, channel_id: ChannelId, message: Message) -> DispatchResultWithPostInfo {
 			let relayer = ensure_signed(origin)?;
 
 			let mut channel = make_inbound_channel::<T>(channel_id);
 			channel.submit(&relayer, &message)
+				.map(|r| r.into())?;
+
+			Ok(().into())
+		}
+	}
+
+	impl<T: Config> SubmitOutbound for Pallet<T> {
+		fn submit(channel_id: ChannelId, payload: &[u8]) -> DispatchResult {
+			// Construct channel object from storage
+			let mut channel = make_outbound_channel::<T>(channel_id);
+			channel.submit(payload)
 		}
 	}
 }
 
-impl<T: Config> SubmitOutbound for Module<T> {
-	fn submit(channel_id: ChannelId, payload: &[u8]) -> DispatchResult {
-		// Construct channel object from storage
-		let mut channel = make_outbound_channel::<T>(channel_id);
-		channel.submit(payload)
-	}
-}
+
+
+

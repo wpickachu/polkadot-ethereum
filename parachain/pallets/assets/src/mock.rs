@@ -1,14 +1,11 @@
 // Mock runtime
-
-use super::*;
-
-use crate::{Module, Config};
+use crate::{Pallet, Config};
 use sp_core::H256;
 use frame_support::{impl_outer_origin, impl_outer_event, parameter_types, weights::Weight};
 use sp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup, IdentifyAccount, Verify}, testing::Header, Perbill, MultiSignature
 };
-use sp_std::convert::{From};
+use sp_std::convert::From;
 use frame_system as system;
 
 impl_outer_origin! {
@@ -69,8 +66,8 @@ impl Config for MockRuntime {
 	type Event = TestEvent;
 }
 
-pub type Assets = Module<MockRuntime>;
-pub type System = system::Module<MockRuntime>;
+pub type Assets = Pallet<MockRuntime>;
+pub type System = system::Pallet<MockRuntime>;
 
 pub fn new_tester() -> sp_io::TestExternalities {
 	let storage = system::GenesisConfig::default().build_storage::<MockRuntime>().unwrap();

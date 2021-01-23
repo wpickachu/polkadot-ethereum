@@ -1,6 +1,5 @@
 use frame_support::{
 	dispatch::DispatchResult,
-	storage::StorageMap,
 };
 use sp_core::H160;
 use sp_std::{cell::Cell, marker::PhantomData, boxed::Box};
@@ -90,7 +89,7 @@ impl<T: Config> Storage<T> {
 		match self.cached_data.get() {
 			Some(data) => data,
 			None => {
-				let data = OutboundChannels::get(self.channel_id);
+				let data = OutboundChannels::<T>::get(self.channel_id);
 				self.cached_data.set(Some(data));
 				data
 			}
@@ -99,7 +98,7 @@ impl<T: Config> Storage<T> {
 
 	fn set(&mut self, data: OutboundChannelData) {
 		self.cached_data.set(Some(data));
-		OutboundChannels::insert(self.channel_id, data)
+		OutboundChannels::<T>::insert(self.channel_id, data)
 	}
 
 	fn try_mutate<R, E, F>(&mut self, f: F) -> Result<R, E>

@@ -1,4 +1,4 @@
-use frame_support::{dispatch::DispatchResult, storage::StorageMap, traits::Get};
+use frame_support::{dispatch::DispatchResult, traits::Get};
 use sp_core::H160;
 use sp_std::{cell::Cell, marker::PhantomData, boxed::Box};
 use artemis_core::{ChannelId, Message};
@@ -92,7 +92,7 @@ impl<T: Config> Storage<T> {
 		match self.cached_data.get() {
 			Some(data) => data,
 			None => {
-				let data = InboundChannels::get(self.channel_id);
+				let data = InboundChannels::<T>::get(self.channel_id);
 				self.cached_data.set(Some(data));
 				data
 			}
@@ -101,7 +101,7 @@ impl<T: Config> Storage<T> {
 
 	fn set(&mut self, data: InboundChannelData) {
 		self.cached_data.set(Some(data));
-		InboundChannels::insert(self.channel_id, data)
+		InboundChannels::<T>::insert(self.channel_id, data)
 	}
 
 	fn try_mutate<R, E, F>(&mut self, f: F) -> Result<R, E>
