@@ -11,6 +11,7 @@ use frame_support::{debug, decl_module, decl_storage, decl_event, decl_error,
 use sp_runtime::RuntimeDebug;
 use sp_std::prelude::*;
 use codec::{Encode, Decode};
+use sp_std::collections::btree_map::BTreeMap;
 
 use artemis_core::{Message, Verifier, Proof};
 use artemis_ethereum::{HeaderId as EthereumHeaderId, Log, Receipt, H256, U256};
@@ -465,18 +466,48 @@ fn ancestry<T: Config>(mut hash: H256) -> impl Iterator<Item = (H256, EthereumHe
 	})
 }
 
+pub struct VerifiedMessageIterator<I> {
+	iter: I
+}
+
+impl<I> VerifiedMessageIterator
+	where I: Iterator<Item = Message>
+{
+	fn new(iter: I) -> Self {
+		Self { iter }
+	}
+}
+
+impl<I> Iterator for VerifiedMessageIterator
+	where I: Iterator<Item = Message>
+{
+	type Item = Result<Log, DispatchError>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self.iter.next() {
+			Some(msg) => {
+				let receipt = Module::verify_receipt_inclusion(&msg.proof)?;
+				match rlp::decode(&msg.data) {
+					Ok(log) => {
+						if !receipt.contains_log(&log) {
+							return Some(Err(Error::<T>::InvalidProof.into()));
+						}
+						Some(Ok(log))
+					},
+					Err(_) => {
+						Some(Err(Error::<T>::InvalidProof.into()))
+					}
+				}
+			},
+			None => None
+		}
+    }
+}
+
 impl<T: Config> Verifier for Module<T> {
 
-	fn verify(message: &Message) -> Result<Log, DispatchError> {
-		let receipt = Self::verify_receipt_inclusion(&message.proof)?;
+	fn verify(messages: &[Message]) -> VerifiedMessageIterator {
 
-		let log: Log = rlp::decode(&message.data)
-			.map_err(|_| Error::<T>::InvalidProof)?;
-
-		if !receipt.contains_log(&log) {
-			return Err(Error::<T>::InvalidProof.into());
-		}
-
-		Ok(log)
 	}
+
 }
