@@ -45,18 +45,92 @@ mod channel;
 mod primitives;
 mod envelope;
 
-pub trait Config: system::Config {
-	type Event: From<Event> + Into<<Self as system::Config>::Event>;
+#[frame_support::pallet]
+pub mod pallet {
+	use super::*;
+	use frame_support::pallet_prelude::*;
+	use frame_system::pallet_prelude::*;
 
-	/// Verifier module for message verification.
-	type Verifier: Verifier;
+	#[pallet::config]
+	pub trait Config: system::Config {
+		type Event: From<Event> + Into<<Self as system::Config>::Event>;
 
-	/// Used by outbound channels to persist messages for outbound delivery.
-	type MessageCommitment: MessageCommitment;
+		/// Verifier module for message verification.
+		type Verifier: Verifier;
 
-	/// Verifier module for message verification.
-	type MessageDispatch: MessageDispatch<(ChannelId, u64)>;
+		/// Used by outbound channels to persist messages for outbound delivery.
+		type MessageCommitment: MessageCommitment;
+
+		/// Verifier module for message verification.
+		type MessageDispatch: MessageDispatch<(ChannelId, u64)>;
+	}
+
+	#[pallet::pallet]
+	#[pallet::generate_store(pub (super) trait Store)]
+	pub struct Pallet<T>(PhantomData<T>);
+
+	#[pallet::storage]
+	pub type SourceChannels<T: Config> = StorageMap<_, Identity, H160, Option<ChannelId>, ValueQuery>;
+
+	#[pallet::storage]
+	pub type InboundChannels<T: Config> = StorageMap<_, Identity, ChannelId, InboundChannelData, ValueQuery>;
+
+	#[pallet::storage]
+	pub type OutboundChannels<T: Config> = StorageMap<_, Identity, ChannelId, OutboundChannelData, ValueQuery>;
+
+	#[pallet::hooks]
+	impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> { }
+
+
+	#[pallet::error]
+	pub enum Error<T> {
+		/// Message came from an invalid outbound channel on the Ethereum side.
+		InvalidSourceChannel,
+		/// Message has an invalid envelope.
+		InvalidEnvelope,
+		/// Message has an unexpected nonce.
+		BadNonce,
+		/// Target application not found.
+		AppNotFound,
+	}
+
+	#[pallet::call]
+	impl<T: Config> Pallet<T> {
+		#[pallet::weight(0)]
+		pub fn submit(origin: OriginFor<T>, message: Message) -> DispatchResult {
+			let relayer = ensure_signed(origin)?;
+			// submit message to verifier for verification
+			let log = T::Verifier::verify(&message)?;
+
+			// Decode log into an Envelope
+			let envelope = Envelope::try_from(log).map_err(|_| Error::<T>::InvalidEnvelope)?;
+
+			// Verify that the message was submitted to us from a known
+			// outbound channel on the ethereum side
+			let channel_id = SourceChannels::get(envelope.channel)
+				.ok_or(Error::<T>::InvalidSourceChannel)?;
+
+			// Submit to an inbound channel for further processing
+			let channel = make_inbound_channel::<T>(channel_id);
+			channel.submit(&relayer, &envelope)
+		}
+	}
+
+	impl<T: Config> SubmitOutbound for Pallet<T> {
+
+		// Submit a message to to Ethereum, taking into account the desired
+		// channel for delivery.
+		fn submit(channel_id: ChannelId, target: H160, payload: &[u8]) -> DispatchResult {
+			// Construct channel object from storage
+			let channel = make_outbound_channel::<T>(channel_id);
+			channel.submit(target, payload)
+		}
+	}
+
+
 }
+
+
 
 decl_storage! {
 	trait Store for Module<T: Config> as BridgeModule {
