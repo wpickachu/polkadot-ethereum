@@ -23,7 +23,7 @@ fn set_balance<T>(asset_id: AssetId, account_id: &AccountId, amount: T)
 #[test]
 fn deposit_should_increase_balance_and_total_issuance() {
 	new_tester().execute_with(|| {
-		let asset_id = AssetId::ETH;
+		let asset_id = AssetId::Ether;
 		let alice: AccountId = Keyring::Alice.into();
 		assert_ok!(<Assets as MultiAsset<_>>::deposit(asset_id, &alice, 500.into()));
 		assert_eq!(Balances::<MockRuntime>::get(&asset_id, &alice), 500.into());
@@ -38,7 +38,7 @@ fn deposit_should_increase_balance_and_total_issuance() {
 #[test]
 fn deposit_should_raise_total_issuance_overflow_error() {
 	new_tester().execute_with(|| {
-		let asset_id = AssetId::ETH;
+		let asset_id = AssetId::Ether;
 		let alice: AccountId = Keyring::Alice.into();
 		TotalIssuance::insert(&asset_id, U256::MAX);
 
@@ -52,7 +52,7 @@ fn deposit_should_raise_total_issuance_overflow_error() {
 #[test]
 fn deposit_should_raise_balance_overflow_error() {
 	new_tester().execute_with(|| {
-		let asset_id = AssetId::ETH;
+		let asset_id = AssetId::Ether;
 		let alice: AccountId = Keyring::Alice.into();
 		Balances::<MockRuntime>::insert(&asset_id, &alice, U256::MAX);
 
@@ -67,18 +67,18 @@ fn deposit_should_raise_balance_overflow_error() {
 fn withdrawal_should_decrease_balance_and_total_issuance() {
 	new_tester().execute_with(|| {
 		let alice: AccountId = Keyring::Alice.into();
-		set_balance(AssetId::ETH, &alice, 500);
+		set_balance(AssetId::Ether, &alice, 500);
 
-		assert_ok!(<Assets as MultiAsset<_>>::withdraw(AssetId::ETH, &alice, 20.into()));
-		assert_eq!(Balances::<MockRuntime>::get(AssetId::ETH, &alice), 480.into());
-		assert_eq!(TotalIssuance::get(AssetId::ETH), 480.into());
+		assert_ok!(<Assets as MultiAsset<_>>::withdraw(AssetId::Ether, &alice, 20.into()));
+		assert_eq!(Balances::<MockRuntime>::get(AssetId::Ether, &alice), 480.into());
+		assert_eq!(TotalIssuance::get(AssetId::Ether), 480.into());
 	});
 }
 
 #[test]
 fn withdrawal_should_raise_total_issuance_underflow_error() {
 	new_tester().execute_with(|| {
-		let asset_id = AssetId::ETH;
+		let asset_id = AssetId::Ether;
 		let alice: AccountId = Keyring::Alice.into();
 		TotalIssuance::insert(&asset_id, U256::one());
 
@@ -93,7 +93,7 @@ fn withdrawal_should_raise_total_issuance_underflow_error() {
 #[test]
 fn withdrawal_should_raise_balance_underflow_error() {
 	new_tester().execute_with(|| {
-		let asset_id = AssetId::ETH;
+		let asset_id = AssetId::Ether;
 		let alice: AccountId = Keyring::Alice.into();
 		TotalIssuance::insert(&asset_id, U256::from(500));
 
@@ -109,7 +109,7 @@ fn withdrawal_should_raise_balance_underflow_error() {
 fn transfer_free_balance() {
 	new_tester().execute_with(|| {
 
-		let asset_id = AssetId::ETH;
+		let asset_id = AssetId::Ether;
 		let alice: AccountId = Keyring::Alice.into();
 		let bob: AccountId = Keyring::Bob.into();
 
@@ -127,7 +127,7 @@ fn transfer_free_balance() {
 fn transfer_should_raise_insufficient_balance() {
 	new_tester().execute_with(|| {
 
-		let asset_id = AssetId::ETH;
+		let asset_id = AssetId::Ether;
 		let alice: AccountId = Keyring::Alice.into();
 		let bob: AccountId = Keyring::Bob.into();
 

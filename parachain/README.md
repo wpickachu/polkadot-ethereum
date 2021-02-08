@@ -189,7 +189,7 @@ For interacting with our chain using the Polkadot-JS API, you'll need to supply 
   },
   "AssetId": {
     "_enum": {
-      "ETH": null,
+      "Ether": null,
       "Token": "H160"
     }
   },

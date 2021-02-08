@@ -34,7 +34,7 @@ pub struct XAssetId {
 impl Into<MultiLocation> for XAssetId {
 	fn into(self) -> MultiLocation {
 		match self.asset {
-			AssetId::ETH =>
+			AssetId::Ether =>
 				MultiLocation::X2(
 					Junction::PalletInstance { id: 0 }, // fungible assets pallet
 					Junction::GeneralIndex { id: 0 }, // ETH

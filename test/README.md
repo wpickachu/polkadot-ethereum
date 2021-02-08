@@ -84,7 +84,7 @@ To see the PolkaETH  balance for `//Alice`:
 
 1. Navigate to Developer > Chain state > Storage
 2. Select the `assets` module in the drop-down.
-3. Select `ETH` as the AssetId
+3. Select `Ether` as the AssetId
 4. Select `Alice` as the AccountId
 5. Click the `+` button
 

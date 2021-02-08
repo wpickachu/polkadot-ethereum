@@ -66,7 +66,7 @@ class SubClient {
         },
         "AssetId": {
           "_enum": {
-            "ETH": null,
+            "Ether": null,
             "Token": "H160"
           }
         },

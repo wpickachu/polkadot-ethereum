@@ -103,7 +103,7 @@ impl SubmitOutbound for MockSubmitOutbound {
 }
 
 parameter_types! {
-	pub const EthAssetId: AssetId = AssetId::ETH;
+	pub const EthAssetId: AssetId = AssetId::Ether;
 }
 
 impl Config for Test {

@@ -123,7 +123,7 @@ fn testnet_genesis(
 			},
 		}),
 		assets: Some(AssetsConfig {
-			balances: vec![(AssetId::ETH, get_account_id_from_seed::<sr25519::Public>("Ferdie"), 10000000.into())]
+			balances: vec![(AssetId::Ether, get_account_id_from_seed::<sr25519::Public>("Ferdie"), 10000000.into())]
 		}),
 		verifier_lightclient: Some(VerifierLightclientConfig {
 			initial_header: EthereumHeader {

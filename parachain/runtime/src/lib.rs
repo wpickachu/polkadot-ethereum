@@ -390,7 +390,7 @@ impl assets::Config for Runtime {
 }
 
 parameter_types! {
-	pub const EthAssetId: AssetId = AssetId::ETH;
+	pub const EthAssetId: AssetId = AssetId::Ether;
 }
 
 impl eth_app::Config for Runtime {

@@ -82,7 +82,7 @@ impl<
 				Junction::GeneralIndex { id: 0 },
 			) => {
 				let value: U256 = amount.into();
-				BridgedAssets::deposit(AssetId::ETH, &who, value).map_err(|_| XcmError::Undefined)?;
+				BridgedAssets::deposit(AssetId::Ether, &who, value).map_err(|_| XcmError::Undefined)?;
 				Ok(())
 			},
 			// Deposit ERC20
@@ -119,7 +119,7 @@ impl<
 				Junction::GeneralIndex { id: 0 },
 			) => {
 				let value: U256 = amount.into();
-				BridgedAssets::withdraw(AssetId::ETH, &who, value).map_err(|_| XcmError::Undefined)?;
+				BridgedAssets::withdraw(AssetId::Ether, &who, value).map_err(|_| XcmError::Undefined)?;
 				Ok(())
 			},
 			// Deposit ERC20

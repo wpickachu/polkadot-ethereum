@@ -30,7 +30,7 @@ describe('Bridge', function () {
     await subClient.connect();
     await ethClient.initialize();
 
-    this.ethAssetId = subClient.api.createType('AssetId', 'ETH');
+    this.ethAssetId = subClient.api.createType('AssetId', 'Ether');
     this.erc20AssetId = subClient.api.createType('AssetId',
       { Token: TestTokenAddress }
     );
