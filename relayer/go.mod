@@ -3,8 +3,9 @@ module github.com/snowfork/polkadot-ethereum/relayer
 go 1.14
 
 require (
+	github.com/ChainSafe/go-schnorrkel v0.0.0-20210201193003-0dcb398ea65f // indirect
 	github.com/allegro/bigcache v1.2.1 // indirect
-	github.com/aristanetworks/goarista v0.0.0-20210107181124-fad53805024e // indirect
+	github.com/aristanetworks/goarista v0.0.0-20210217214619-5a14f8ca694d // indirect
 	github.com/btcsuite/btcd v0.21.0-beta // indirect
 	github.com/ethereum/go-ethereum v1.9.25
 	github.com/go-ole/go-ole v1.2.5 // indirect
@@ -22,17 +23,16 @@ require (
 	github.com/shirou/gopsutil v3.20.12+incompatible // indirect
 	github.com/sirupsen/logrus v1.7.0
 	github.com/snowfork/ethashproof v0.0.0-20210106050330-7fb8adbe0892
-	github.com/snowfork/go-substrate-rpc-client/v2 v2.0.2-0.20210122183154-789fecaf3a9b
+	github.com/snowfork/go-substrate-rpc-client/v2 v2.0.2-0.20210220054135-8cae0324a85f
 	github.com/spf13/afero v1.5.1 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v1.1.1
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.7.1
-	github.com/stretchr/testify v1.4.0
-	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
-	golang.org/x/net v0.0.0-20201202161906-c7110b5ffcbb // indirect
+	github.com/stretchr/testify v1.6.1
+	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
 	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
-	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
+	golang.org/x/sys v0.0.0-20210220050731-9a76102bfb43 // indirect
 	golang.org/x/text v0.3.5 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect

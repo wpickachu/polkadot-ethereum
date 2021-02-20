@@ -8,21 +8,22 @@ import (
 	"testing"
 
 	"github.com/snowfork/go-substrate-rpc-client/v2/signature"
+	"github.com/snowfork/polkadot-ethereum/relayer/crypto/ss58"
 )
 
 func TestNewKeypairFromSeed(t *testing.T) {
-	kp, err := NewKeypairFromSeed("//Alice", "substrate")
+	kp, err := NewKeypairFromSeed("//Alice", ss58.SUBSTRATE)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	if kp.PublicKey() == "" || kp.Address() == "" {
-		t.Fatalf("key is missing data: %#v", kp)
+		t.Fatalf("key is missing data: %#v", ss58.SUBSTRATE)
 	}
 }
 
 func TestKeypair_AsKeyringPair(t *testing.T) {
-	kp, err := NewKeypairFromSeed("//Alice", "substrate")
+	kp, err := NewKeypairFromSeed("//Alice", ss58.SUBSTRATE)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -38,7 +39,7 @@ func TestKeypair_AsKeyringPair(t *testing.T) {
 }
 
 func TestEncodeAndDecodeKeypair(t *testing.T) {
-	kp, err := NewKeypairFromSeed("//Alice", "substrate")
+	kp, err := NewKeypairFromSeed("//Alice", ss58.SUBSTRATE)
 	if err != nil {
 		t.Fatal(err)
 	}

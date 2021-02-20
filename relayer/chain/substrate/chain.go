@@ -14,6 +14,7 @@ import (
 	"github.com/snowfork/polkadot-ethereum/relayer/chain"
 	"github.com/snowfork/polkadot-ethereum/relayer/chain/ethereum"
 	"github.com/snowfork/polkadot-ethereum/relayer/crypto/sr25519"
+	"github.com/snowfork/polkadot-ethereum/relayer/crypto/ss58"
 )
 
 type Chain struct {
@@ -30,7 +31,7 @@ func NewChain(config *Config) (*Chain, error) {
 	log := logrus.WithField("chain", Name)
 
 	// Generate keypair from secret
-	kp, err := sr25519.NewKeypairFromSeed(config.PrivateKey, "")
+	kp, err := sr25519.NewKeypairFromSeed(config.PrivateKey, ss58.SUBSTRATE)
 	if err != nil {
 		return nil, err
 	}
