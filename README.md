@@ -38,4 +38,4 @@ To test out and use the bridge, please refer to to the [Tests](#Tests) section a
 
 ## Security
 
-The security policy and procedures can be found in SECURITY.md.
+The security policy and procedures can be found in SECURITY.md
