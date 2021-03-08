@@ -9,7 +9,7 @@ start_ganache()
     echo "Starting Ganache"
     yarn run ganache-cli \
         --port=8545 \
-        --blockTime=4 \
+        --blockTime=5 \
         --networkId=344 \
         --deterministic \
         --mnemonic='stone speak what ritual switch pigeon weird dutch burst shaft nature shove' \

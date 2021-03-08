@@ -1,3 +1,4 @@
+const ScaleCodec = artifacts.require('ScaleCodec');
 const ETHApp = artifacts.require("ETHApp");
 
 const BigNumber = web3.BigNumber;
@@ -12,11 +13,20 @@ require("chai")
 
 const ethers = require("ethers");
 
-contract("IncentivizedInboundChannel", function (accounts) {
+describe("IncentivizedInboundChannel", function () {
   // Accounts
-  const userOne = accounts[1];
-  const userTwo = accounts[2];
-  const userThree = accounts[3];
+  let userOne;
+  let userTwo;
+  let userThree;
+
+  before(async function() {
+    const codec = await ScaleCodec.new();
+    ETHApp.link(codec);
+    accounts = await web3.eth.getAccounts();
+    userOne = accounts[0];
+    userTwo = accounts[1];
+    userThree = accounts[2];
+  });
 
   describe("newParachainCommitment", function () {
     beforeEach(async function () {

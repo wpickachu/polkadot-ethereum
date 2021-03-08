@@ -1,3 +1,4 @@
+const ScaleCodec = artifacts.require('ScaleCodec');
 const ETHApp = artifacts.require('ETHApp');
 const ERC20App = artifacts.require('ERC20App');
 const BasicOutboundChannel = artifacts.require('BasicOutboundChannel');
@@ -15,13 +16,23 @@ require('chai')
   .use(require('chai-bignumber')(BigNumber))
   .should();
 
-contract('Gas expenditures', function (accounts) {
+describe('Gas expenditures', function () {
   // Accounts
-  const owner = accounts[0];
-  const userOne = accounts[1];
+  let accounts;
+  let owner;
+  let userOne;
 
   // Constants
   const POLKADOT_ADDRESS = "38j4dG5GzsL1bw2U2AVgeyAk6QTxq43V7zPbdXAmbVLjvDCK"
+
+  before(async function() {
+    const codec = await ScaleCodec.new();
+    ETHApp.link(codec);
+    ERC20App.link(codec);
+    accounts = await web3.eth.getAccounts();
+    owner = accounts[0];
+    userOne = accounts[1];
+  });
 
   describe('Gas costs', function () {
 

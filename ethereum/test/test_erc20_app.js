@@ -14,6 +14,7 @@ require("chai")
   .use(require("chai-bignumber")(BigNumber))
   .should();
 
+const ScaleCodec = artifacts.require("ScaleCodec");
 const ERC20App = artifacts.require("ERC20App");
 const TestToken = artifacts.require("TestToken");
 
@@ -34,13 +35,22 @@ const lockupFunds = (contract, token, sender, recipient, amount, channel) => {
   )
 }
 
-contract("ERC20App", function (accounts) {
+describe("ERC20App", function () {
   // Accounts
-  const owner = accounts[0];
-  const userOne = accounts[1];
+  let accounts;
+  let owner;
+  let userOne;
 
   // Constants
   const POLKADOT_ADDRESS = "0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d"
+
+  before(async function() {
+    const codec = await ScaleCodec.new();
+    ERC20App.link(codec);
+    accounts = await web3.eth.getAccounts();
+    owner = accounts[0];
+    userOne = accounts[1];
+  });
 
   describe("deposits", function () {
     beforeEach(async function () {

@@ -2,6 +2,7 @@ const { singletons } = require('@openzeppelin/test-helpers');
 const { ethers } = require("ethers");
 const BigNumber = require('bignumber.js');
 const AssertionError = require('assert').AssertionError;
+
 const {
   confirmBasicChannelSend,
   confirmIncentivizedChannelSend,
@@ -18,6 +19,7 @@ require("chai")
   .should();
 
 const DOTApp = artifacts.require("DOTApp");
+const ScaleCodec = artifacts.require("ScaleCodec");
 const Token = artifacts.require("WrappedToken");
 
 const DOT_DECIMALS = 10;
@@ -43,13 +45,21 @@ const burnTokens = (contract, sender, recipient, amount, channel) => {
   )
 }
 
-
-contract("DOTApp", function (accounts) {
+describe("DOTApp", function () {
   // Accounts
-  const owner = accounts[0];
-  const user = accounts[1];
+  let accounts;
+  let owner;
+  let userOne;
 
   const POLKADOT_ADDRESS = "0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d"
+
+  before(async function() {
+    const codec = await ScaleCodec.new();
+    DOTApp.link(codec);
+    accounts = await web3.eth.getAccounts();
+    owner = accounts[0];
+    user = accounts[1];
+  });
 
   describe("minting", function () {
     beforeEach(async function () {

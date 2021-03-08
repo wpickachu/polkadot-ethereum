@@ -11,11 +11,18 @@ require("chai")
   .use(require("chai-bignumber")(BigNumber))
   .should();
 
-contract("IncentivizedOutboundChannel", function (accounts) {
+describe("IncentivizedOutboundChannel", function () {
   // Accounts
-  const appAddress = accounts[1];
-  const origin = accounts[2];
+  let accounts;
+  let appAddress;
+  let origin;
   const testPayload = ethers.utils.formatBytes32String("arbitrary-payload");
+
+  before(async function() {
+    accounts = await web3.eth.getAccounts();
+    appAddress = accounts[0];
+    origin = accounts[1];
+  });
 
   describe("deployment and initialization", function () {
     beforeEach(async function () {

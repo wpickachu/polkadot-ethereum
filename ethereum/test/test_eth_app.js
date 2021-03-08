@@ -15,7 +15,7 @@ require("chai")
   .should();
 
 const ethers = require("ethers");
-
+const ScaleCodec = artifacts.require('ScaleCodec');
 const ETHApp = artifacts.require("ETHApp");
 
 const lockupFunds = (contract, sender, recipient, amount, channel) => {
@@ -29,14 +29,23 @@ const lockupFunds = (contract, sender, recipient, amount, channel) => {
   )
 }
 
-contract("ETHApp", function (accounts) {
+describe("ETHApp", function () {
   // Accounts
-  const owner = accounts[0];
-  const userOne = accounts[1];
-  const userTwo = accounts[2];
+  let owner
+  let userOne;
+  let userTwo;
 
   // Constants
   const POLKADOT_ADDRESS = "0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d"
+
+  before(async function() {
+    const codec = await ScaleCodec.new();
+    ETHApp.link(codec);
+    accounts = await web3.eth.getAccounts();
+    owner = accounts[0];
+    userOne = accounts[1];
+    userTwo = accounts[2];
+  });
 
   describe("deposits", function () {
     beforeEach(async function () {

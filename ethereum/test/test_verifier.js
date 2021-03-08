@@ -7,9 +7,15 @@ require("chai")
   .use(require("chai-bignumber")(BigNumber))
   .should();
 
-contract("Verifier", function (accounts) {
-  const operator = accounts[1];
-  const userTwo = accounts[2];
+describe("Verifier", function () {
+  let operator;
+  let userTwo;
+
+  before(async function() {
+    accounts = await web3.eth.getAccounts();
+    operator = accounts[1];
+    userTwo = accounts[2];
+  });
 
   describe("Verifier contract deployment", function () {
     beforeEach(async function () {
