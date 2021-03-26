@@ -18,6 +18,8 @@ use envelope::Envelope;
 
 use sp_runtime::traits::Zero;
 
+mod benchmarking;
+
 #[cfg(test)]
 mod test;
 
