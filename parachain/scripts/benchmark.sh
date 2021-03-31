@@ -22,12 +22,13 @@ cargo build --release \
     --features runtime-benchmarks,$RUNTIME_FEATURE
 
 # TODO: add frame_system here once invalid WeightInfo impl is resolved
-PALLETS="assets dot_app erc20_app eth_app pallet_balances pallet_timestamp verifier_lightclient"
+PALLETS="assets basic_channel::inbound dot_app erc20_app eth_app incentivized_channel::inbound pallet_balances pallet_timestamp verifier_lightclient"
 
 echo "Generating weights module for $RUNTIME_DIR with pallets $PALLETS"
 
 for pallet in $PALLETS
 do
+    MODULE_NAME="$(tr -s [:] _ <<< $pallet)_weights"
     # TODO: enable options in comments below once
     # all pallets work in wasm
     #    --execution wasm \
@@ -38,8 +39,8 @@ do
         --extrinsic "*" \
         --repeat 20 \
         --steps 50 \
-        --output $RUNTIME_DIR/src/weights/${pallet}_weights.rs
-    echo "pub mod ${pallet}_weights;" >> $RUNTIME_DIR/src/weights/tmpmod.rs
+        --output $RUNTIME_DIR/src/weights/$MODULE_NAME.rs
+    echo "pub mod $MODULE_NAME;" >> $RUNTIME_DIR/src/weights/tmpmod.rs
 done
 
 mv $RUNTIME_DIR/src/weights/tmpmod.rs $RUNTIME_DIR/src/weights/mod.rs

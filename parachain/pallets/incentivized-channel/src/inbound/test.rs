@@ -126,6 +126,7 @@ impl incentivized_inbound_channel::Config for Test {
 	type RewardsAccount = RewardsAccount;
 	type InboundMessageFee = Balance;
 	type RewardRelayer = InstantRewards<Self, Balances>;
+	type WeightInfo = ();
 }
 
 pub fn new_tester(source_channel: H160) -> sp_io::TestExternalities {
